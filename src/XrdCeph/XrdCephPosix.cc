@@ -38,7 +38,7 @@
 #include <map>
 #include <stdexcept>
 #include <string>
-#include<ifstream>
+#include<fstream>
 #include <sstream>
 #include<jsoncpp/json/json.h>
 #include <sys/xattr.h>
