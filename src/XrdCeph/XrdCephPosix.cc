@@ -1289,11 +1289,7 @@ signed int tranverseJson( const Json::Value &root, const char *poolname, long lo
              }
             //search subtrees
             int found = tranverseJson( *itr, poolname, quota, depth);
-            if(found>1){
-              //error case
-              return found-1;
-            }
-            else if (found==1){
+            if (found==1){
              //the subtree contains the pool
              found = quotatraversal(*itr, poolname, quota, depth);
              return 0;
@@ -1324,7 +1320,8 @@ int getquotas(long long *totalSpace, const char *poolname, const char *quotapath
         Json::Reader reader;
         Json::Value obj;
         reader.parse(readBuffer, obj);
-        tranverseJson(obj,poolname,totalSpace);
+        int rc = tranverseJson(obj,poolname,totalSpace);
+        if(rc==-2){logwrapper((char*)"no pool quota available");}
    }
    else{
      return -1;
