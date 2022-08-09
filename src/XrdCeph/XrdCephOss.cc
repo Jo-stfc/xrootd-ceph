@@ -318,6 +318,7 @@ int XrdCephOss::StatLS(XrdOucEnv &env, const char *path, char *buff, int &blen)
     long long fSpace, fSize;
     XrdOssVSInfo sP;
     int rc = ceph_posix_statfs_by_pool(&(sP.Total), &(sP.Free), path);
+        //space = space taken, size = total space
         if (rc) {
            return rc;
         }
