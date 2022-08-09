@@ -273,7 +273,7 @@ int XrdCephOss::Stat(const char* path,
                   int opts,
                   XrdOucEnv* env) {
   try {
-    if (!strcmp(path, "/")) {
+    if (!strcmp(path, "/") || !strcmp(path, "dteam")  || !strcmp(path, "atlas") || !strcmp(path, "alice") || !strcmp(path, "lhcb") || !strcmp(path, "cms" ) || !strcmp(path, "dune") || !strcmp(path, "lsst")) {
       // special case of a stat made by the locate interface
       // we intend to then list all files
       memset(buff, 0, sizeof(*buff));
