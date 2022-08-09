@@ -1323,7 +1323,7 @@ int getquotas(long long *totalSpace, const char *poolname, const char *quotapath
         Json::Value obj;
         reader.parse(readBuffer, obj);
         int rc=tranverseJson(obj,poolname,totalSpace);
-        logwrapper((char*)rc);
+        logwrapper((char*)std::to_string(rc).c_str());
    }
    else{
      return -1;
