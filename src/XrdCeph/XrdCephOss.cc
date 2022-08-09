@@ -226,7 +226,20 @@ int XrdCephOss::Configure(const char *configfn, XrdSysError &Eroute) {
            return 1;
          }
        }
-
+       if (!strncmp(var, "ceph.quotapath", 19)) {
+         var = Config.GetWord();
+         if (var) {
+           // Warn in case parameters were givne
+           char parms[1040];
+           if (!Config.GetRest(parms, sizeof(parms)) || parms[0]) {
+             Eroute.Emsg("Config", "readvalgname parameters will be ignored");
+           }
+          m_configQuotapath = var; // allowed values would be aio, io
+         } else {
+           Eroute.Emsg("Config", "Missing value for ceph.quotapath in config file", configfn);
+           return 1;
+         }
+       }
      } // while
 
      // Now check if any errors occured during file i/o
@@ -317,7 +330,7 @@ int XrdCephOss::StatLS(XrdOucEnv &env, const char *path, char *buff, int &blen)
                            "&oss.maxf=%lld&oss.used=%lld&oss.quota=%lld";
     long long fSpace, fSize;
     XrdOssVSInfo sP;
-    int rc = ceph_posix_statfs_by_pool(&(sP.Total), &(sP.Free), path);
+    int rc = ceph_posix_statfs_by_pool(&(sP.Total), &(sP.Free), path , m_configQuotapath);
         //space = space taken, size = total space
         if (rc) {
            return rc;

@@ -1314,11 +1314,11 @@ std::string slurp(std::ifstream& in) {
     sstr << in.rdbuf();
     return sstr.str();
 }
-int getquotas(long long *totalSpace, const char *poolname)
+int getquotas(long long *totalSpace, const char *poolname, std::string quotapath)
 {
     //read in quota file
     std::string readBuffer;
-    std::ifstream t("/etc/xrootd/storagesummary.json");
+    std::ifstream t(quotapath);
     if(t){
         readBuffer = slurp(t);
         Json::Reader reader;
@@ -1332,7 +1332,7 @@ int getquotas(long long *totalSpace, const char *poolname)
   return 0;
 }
 
-int ceph_posix_statfs_by_pool(long long *usedSpace, long long *totalSpace, const char *pool_name) {
+int ceph_posix_statfs_by_pool(long long *usedSpace, long long *totalSpace, const char *pool_name, std::string quotapath) {
   logwrapper((char*)"ceph_posix_statfs_from_pool");
   // get the poolIdx to use
   int cephPoolIdx = getCephPoolIdxAndIncrease();
@@ -1344,7 +1344,7 @@ int ceph_posix_statfs_by_pool(long long *usedSpace, long long *totalSpace, const
   librados::cluster_stat_t result;
   int rc = cluster->cluster_stat(result);
   //pool quotas
-  rc = getquotas(totalSpace,pool_name);
+  rc = getquotas(totalSpace,pool_name,quotapath);
   if(rc==-1){
     logwrapper((char*)"could not open quota file");
     return -EBADF;
