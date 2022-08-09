@@ -311,6 +311,23 @@ int XrdCephOss::StatVS(XrdOssVSInfo *sP, const char *sname, int updt) {
   sP->Extents = 1;
   return XrdOssOK;
 }
+int XrdCephOss::StatLS(XrdOucEnv &env, const char *path, char *buff, int &blen)
+{
+   static const char *Resp="oss.cgroup=%s&oss.space=%lld&oss.free=%lld"
+                           "&oss.maxf=%lld&oss.used=%lld&oss.quota=%lld";
+    long long fSpace, fSize;
+    XrdOssVSInfo sP;
+    int rc = ceph_posix_statfs_by_pool(&(sP.Total), &(sP.Free), path);
+        if (rc) {
+           return rc;
+        }
+       fSpace=sP.Total;
+       fSize=sP.Free;
+       if (fSpace < 0) fSpace = 0;
+       blen = snprintf(buff, blen, Resp, "public", fSize, fSize-fSpace, fSize-fSpace,
+                                   fSpace, 85634234234);
+       return XrdOssOK;
+}
 
 int XrdCephOss::Truncate (const char* path,
                           unsigned long long size,
