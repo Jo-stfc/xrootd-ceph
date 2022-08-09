@@ -38,7 +38,9 @@
 #include <map>
 #include <stdexcept>
 #include <string>
+#include<fstream>
 #include <sstream>
+#include<jsoncpp/json/json.h>
 #include <sys/xattr.h>
 #include <time.h>
 #include <limits>
@@ -1252,6 +1254,135 @@ int ceph_posix_statfs(long long *totalSpace, long long *freeSpace) {
   }
   return rc;
 }
+
+signed int quotatraversal( const Json::Value &root, const char *poolname, long long *quota, unsigned short depth  = 0 ){
+//find quota values from the json submap of the VO 
+for( Json::Value::const_iterator itr = root.begin() ; itr != root.end() ; itr++ ) {
+     if(itr.key()=="totalsize"){
+              Json::FastWriter fastWriter;
+              *quota = std::stoll(fastWriter.write(*itr));
+              return 0;
+        }
+}
+return -1;
+}
+
+signed int tranverseJson( const Json::Value &root, const char *poolname, long long *quota, unsigned short depth  = 0 )
+{   //recursively search the JSON tree for the correct pool
+    depth += 1;
+    if( root.size() > 0 ) {
+       for( Json::Value::const_iterator itr = root.begin() ; itr != root.end() ; itr++ ) {
+          if(itr.key()=="vos"){
+              Json::FastWriter fastWriter;
+              std::string output = fastWriter.write(*itr);
+              if(output.find(poolname) != std::string::npos){
+                 //it's the correct pool, go back 1 depth to find the corresponding quota
+                 return 1;
+               }
+              else{ return -1;}
+             }
+            else{
+               //recusive went too deep
+               if(depth > 7) {return -1;}
+             }
+            //search subtrees
+            int found = tranverseJson( *itr, poolname, quota, depth);
+            if(found>1){
+              //error case
+              return found-1;
+            }
+            else if (found==1){
+             //the subtree contains the pool
+             found = quotatraversal(*itr, poolname, quota, depth);
+             return 0;
+            }
+            else if (found==0){
+             //propagate back that it's found
+             return 0;
+            }
+         }
+    }
+   logwrapper((char*)"no quota set for VO");  
+   // no quota found
+   return -2;
+}
+std::string slurp(std::ifstream& in) {
+   //convert file to string
+    std::ostringstream sstr;
+    sstr << in.rdbuf();
+    return sstr.str();
+}
+int getquotas(long long *totalSpace, const char *poolname, const char *quotapath)
+{
+    //read in quota file
+    std::string readBuffer;
+    std::ifstream t(quotapath);
+    if(t){
+        readBuffer = slurp(t);
+        Json::Reader reader;
+        Json::Value obj;
+        reader.parse(readBuffer, obj);
+        tranverseJson(obj,poolname,totalSpace);
+   }
+   else{
+     return -1;
+   }
+  return 0;
+}
+
+int ceph_posix_statfs_by_pool(long long *usedSpace, long long *totalSpace, const char *pool_name, const char *quotapath) {
+  logwrapper((char*)"ceph_posix_statfs_from_pool");
+  // get the poolIdx to use
+  int cephPoolIdx = getCephPoolIdxAndIncrease();
+  librados::Rados* cluster = checkAndCreateCluster(cephPoolIdx);
+  if (0 == cluster) {
+    return -EINVAL;
+  }
+  //global ceph limits
+  librados::cluster_stat_t result;
+  int rc = cluster->cluster_stat(result);
+  //pool quotas
+  rc = getquotas(totalSpace,pool_name,quotapath);
+  if(rc==-1){
+    logwrapper((char*)"could not open quota file");
+    return -EBADF;
+  }
+  std::list<std::string> vec;
+  if (!pool_name) {
+      auto ret = cluster->pool_list(vec);
+      if (ret < 0) {
+        return 1;
+      }
+    } else {
+      vec.push_back(pool_name);
+    }
+    std::map<std::string,librados::pool_stat_t> stat;
+    auto ret = cluster->get_pool_stats(vec, stat);
+    if (ret < 0) {
+    // cerr << "error fetching pool stats: " << cpp_strerror(ret) << std::endl;
+           return 1;
+               }
+     //
+    if (0 == rc) {
+        *usedSpace = stat[pool_name].num_kb * 1024;
+    //   *freeSpace = result.kb_avail * 1024;
+        }
+    return rc;
+}   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 static int ceph_posix_internal_truncate(const CephFile &file, unsigned long long size) {
   libradosstriper::RadosStriper *striper = getRadosStriper(file);

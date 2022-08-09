@@ -41,6 +41,7 @@ if( NOT XRDCEPH_SUBMODULE )
   macro( add_library _target )
     _add_library( ${_target} ${ARGN} )
     add_dependencies( ${_target} XrdVersion.hh )
+    target_link_libraries( ${_target} jsoncpp)
   endmacro()
 
   macro( add_executable _target )
