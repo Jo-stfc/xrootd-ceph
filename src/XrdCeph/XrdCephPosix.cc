@@ -1314,7 +1314,7 @@ std::string slurp(std::ifstream& in) {
     sstr << in.rdbuf();
     return sstr.str();
 }
-int getquotas(long long *totalSpace, const char *poolname, std::string quotapath)
+int getquotas(long long *totalSpace, const char *poolname, char *quotapath)
 {
     //read in quota file
     std::string readBuffer;
@@ -1332,7 +1332,7 @@ int getquotas(long long *totalSpace, const char *poolname, std::string quotapath
   return 0;
 }
 
-int ceph_posix_statfs_by_pool(long long *usedSpace, long long *totalSpace, const char *pool_name, std::string quotapath) {
+int ceph_posix_statfs_by_pool(long long *usedSpace, long long *totalSpace, const char *pool_name, char *quotapath) {
   logwrapper((char*)"ceph_posix_statfs_from_pool");
   // get the poolIdx to use
   int cephPoolIdx = getCephPoolIdxAndIncrease();
