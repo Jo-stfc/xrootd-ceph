@@ -65,6 +65,7 @@ public:
   virtual int     Rename(const char *, const char *, XrdOucEnv *eP1=0, XrdOucEnv *eP2=0);
   virtual int     Stat(const char *, struct stat *, int opts=0, XrdOucEnv *eP=0);
   virtual int     StatFS(const char *path, char *buff, int &blen, XrdOucEnv *eP=0);
+  virtual int     StatLS(XrdOucEnv &env, const char *path, char *buff, int &blen);
   virtual int     StatVS(XrdOssVSInfo *sP, const char *sname=0, int updt=0);
   virtual int     Truncate(const char *, unsigned long long, XrdOucEnv *eP=0);
   virtual int     Unlink(const char *path, int Opts=0, XrdOucEnv *eP=0);
@@ -77,7 +78,7 @@ public:
     std::string m_configBufferIOmode = "aio";
     bool m_configReadVEnable=false; //! enable readV decorator
     std::string m_configReadVAlgName="passthrough"; // readV algorithm type
-    
+    std::string m_configQuotapath = "/etc/xrootd/storagesummary.json";    
 };
 
 #endif /* __CEPH_OSS_HH__ */

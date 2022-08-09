@@ -226,7 +226,20 @@ int XrdCephOss::Configure(const char *configfn, XrdSysError &Eroute) {
            return 1;
          }
        }
-
+       if (!strncmp(var, "ceph.quotapath", 19)) {
+         var = Config.GetWord();
+         if (var) {
+           // Warn in case parameters were givne
+           char parms[1040];
+           if (!Config.GetRest(parms, sizeof(parms)) || parms[0]) {
+             Eroute.Emsg("Config", "readvalgname parameters will be ignored");
+           }
+          m_configQuotapath = var; // allowed values would be aio, io
+         } else {
+           Eroute.Emsg("Config", "Missing value for ceph.quotapath in config file", configfn);
+           return 1;
+         }
+       }
      } // while
 
      // Now check if any errors occured during file i/o
@@ -273,7 +286,7 @@ int XrdCephOss::Stat(const char* path,
                   int opts,
                   XrdOucEnv* env) {
   try {
-    if (!strcmp(path, "/")) {
+    if (!strcmp(path, "/") || !strcmp(path, "dteam")  || !strcmp(path, "atlas") || !strcmp(path, "alice") || !strcmp(path, "lhcb") || !strcmp(path, "cms" ) || !strcmp(path, "dune") || !strcmp(path, "lsst")) {
       // special case of a stat made by the locate interface
       // we intend to then list all files
       memset(buff, 0, sizeof(*buff));
@@ -310,6 +323,24 @@ int XrdCephOss::StatVS(XrdOssVSInfo *sP, const char *sname, int updt) {
   sP->Usage = sP->Total-sP->Free;
   sP->Extents = 1;
   return XrdOssOK;
+}
+int XrdCephOss::StatLS(XrdOucEnv &env, const char *path, char *buff, int &blen)
+{
+   static const char *Resp="oss.cgroup=%s&oss.space=%lld&oss.free=%lld"
+                           "&oss.maxf=%lld&oss.used=%lld&oss.quota=%lld";
+    long long fSpace, fSize;
+    XrdOssVSInfo sP;
+    int rc = ceph_posix_statfs_by_pool(&(sP.Total), &(sP.Free), path , m_configQuotapath.c_str());
+        //space = space taken, size = total space
+        if (rc) {
+           return rc;
+        }
+       fSpace=sP.Total;
+       fSize=sP.Free;
+       if (fSpace < 0) fSpace = 0;
+       blen = snprintf(buff, blen, Resp, "public", fSize, fSize-fSpace, fSize-fSpace,
+                                   fSpace, 85634234234);
+       return XrdOssOK;
 }
 
 int XrdCephOss::Truncate (const char* path,
