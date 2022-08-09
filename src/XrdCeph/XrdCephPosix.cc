@@ -1287,9 +1287,9 @@ signed int tranverseJson( const Json::Value &root, const char *poolname, long lo
              }
             //search subtrees
             int found = tranverseJson( *itr, poolname, quota, depth);
-            if(found>1){
+            if(found==-2){
               //error case
-              return found-1;
+              return -2;
             }
             else if (found==1){
              //the subtree contains the pool
@@ -1302,7 +1302,7 @@ signed int tranverseJson( const Json::Value &root, const char *poolname, long lo
             }
          }
     }
-   logwrapper((char*)"no quota set for VO");  
+//   logwrapper((char*)"no quota set for VO");  
    // no quota found
    return -2;
 }
