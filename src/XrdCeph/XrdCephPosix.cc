@@ -1289,7 +1289,7 @@ signed int tranverseJson( const Json::Value &root, const char *poolname, long lo
              }
             //search subtrees
             int found = tranverseJson( *itr, poolname, quota, depth);
-            if(found<0){
+            if(found>1){
               //error case
               return found-1;
             }
