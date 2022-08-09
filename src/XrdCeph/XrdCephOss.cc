@@ -330,7 +330,7 @@ int XrdCephOss::StatLS(XrdOucEnv &env, const char *path, char *buff, int &blen)
                            "&oss.maxf=%lld&oss.used=%lld&oss.quota=%lld";
     long long fSpace, fSize;
     XrdOssVSInfo sP;
-    int rc = ceph_posix_statfs_by_pool(&(sP.Total), &(sP.Free), path , m_configQuotapath);
+    int rc = ceph_posix_statfs_by_pool(&(sP.Total), &(sP.Free), path , m_configQuotapath.c_str());
         //space = space taken, size = total space
         if (rc) {
            return rc;
