@@ -300,7 +300,7 @@ int XrdCephOss::Stat(const char* path,
                   int opts,
                   XrdOucEnv* env) {
   try {
-    const char *sep = ",";
+    std::string sep = ",";
     if (m_configPoolnames.contains(path+sep)!=std::string::npos) {
       // special case of a stat made by the locate interface
       // we intend to then list all files
