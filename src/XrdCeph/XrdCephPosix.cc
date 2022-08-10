@@ -1272,7 +1272,7 @@ signed int tranverseJson( const Json::Value &root, const char *poolname, long lo
     depth += 1;
     if( root.size() > 0 ) {
        for( Json::Value::const_iterator itr = root.begin() ; itr != root.end() ; itr++ ) {
-          if(itr.key()=="vos"){
+          if(itr.key()=="path"){
               Json::FastWriter fastWriter;
               std::string output = fastWriter.write(*itr);
               if(output.find(poolname) != std::string::npos){
@@ -1287,10 +1287,6 @@ signed int tranverseJson( const Json::Value &root, const char *poolname, long lo
              }
             //search subtrees
             int found = tranverseJson( *itr, poolname, quota, depth);
-            /*if(found>1){
-              //error case
-              return found-1;
-            }*/
             if (found==1){
              //the subtree contains the pool
              found = quotatraversal(*itr, poolname, quota, depth);
