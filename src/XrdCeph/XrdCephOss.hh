@@ -78,7 +78,8 @@ public:
     //std::string m_configBufferIOmode = "aio";
     //bool m_configReadVEnable=false; //! enable readV decorator
     //std::string m_configReadVAlgName="passthrough"; // readV algorithm type
-    std::string m_configQuotapath = "/etc/xrootd/storagesummary.json";    
+    std::string m_configQuotapath = "/etc/xrootd/storagesummary.json";   
+    std::string m_configPoolnames = "dteam,cms,lhcb,atlas,lsst,dune,"; 
 };
 
 #endif /* __CEPH_OSS_HH__ */
