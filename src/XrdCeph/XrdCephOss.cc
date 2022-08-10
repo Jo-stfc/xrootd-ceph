@@ -300,8 +300,8 @@ int XrdCephOss::Stat(const char* path,
                   int opts,
                   XrdOucEnv* env) {
   try {
-    std::string patdiff = path+",";
-    if (m_configPoolnames.contains(pathdiff)!=std::string::npos) {
+    const char *sep = ",";
+    if (m_configPoolnames.contains(path+sep)!=std::string::npos) {
       // special case of a stat made by the locate interface
       // we intend to then list all files
       memset(buff, 0, sizeof(*buff));
