@@ -240,6 +240,20 @@ int XrdCephOss::Configure(const char *configfn, XrdSysError &Eroute) {
            return 1;
          }
        }
+       if (!strncmp(var, "ceph.poolnames", 20)) {
+         var = Config.GetWord();
+         if (var) {
+           // Warn in case parameters were givne
+           char parms[1040];
+           if (!Config.GetRest(parms, sizeof(parms)) || parms[0]) {
+             Eroute.Emsg("Config", "readvalgname parameters will be ignored");
+           }
+          m_configPoolnames = var; // allowed values would be aio, io
+         } else {
+           Eroute.Emsg("Config", "Missing value for ceph.quotapath in config file", configfn);
+           return 1;
+         }
+       }
      } // while
 
      // Now check if any errors occured during file i/o
@@ -286,7 +300,7 @@ int XrdCephOss::Stat(const char* path,
                   int opts,
                   XrdOucEnv* env) {
   try {
-    if (!strcmp(path, "/") || !strcmp(path, "dteam")  || !strcmp(path, "atlas") || !strcmp(path, "alice") || !strcmp(path, "lhcb") || !strcmp(path, "cms" ) || !strcmp(path, "dune") || !strcmp(path, "lsst")) {
+    if (m_ConfigPoolnames.contains(path+",")!=std::string::npos) {
       // special case of a stat made by the locate interface
       // we intend to then list all files
       memset(buff, 0, sizeof(*buff));
