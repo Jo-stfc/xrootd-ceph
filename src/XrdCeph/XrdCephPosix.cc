@@ -1274,7 +1274,7 @@ signed int tranverseJson( const Json::Value &root, const char *poolname, long lo
     depth += 1;
     if( root.size() > 0 ) {
        for( Json::Value::const_iterator itr = root.begin() ; itr != root.end() ; itr++ ) {
-          if(itr.key()=="vos"){
+          if(itr.key()=="path"){
               Json::FastWriter fastWriter;
               std::string output = fastWriter.write(*itr);
               if(output.find(poolname) != std::string::npos){
