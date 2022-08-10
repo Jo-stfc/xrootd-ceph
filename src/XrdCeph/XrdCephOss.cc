@@ -250,7 +250,7 @@ int XrdCephOss::Configure(const char *configfn, XrdSysError &Eroute) {
            }
           m_configPoolnames = var; // allowed values would be aio, io
          } else {
-           Eroute.Emsg("Config", "Missing value for ceph.quotapath in config file", configfn);
+           Eroute.Emsg("Config", "Missing value for ceph.poolnames in config file", configfn);
            return 1;
          }
        }
