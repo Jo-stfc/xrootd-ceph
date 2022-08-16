@@ -546,6 +546,13 @@ myfile.close();
 static CephFile getCephFile(const char *path, XrdOucEnv *env) {
   CephFile file;
   fillCephFile(path, env, file);
+{
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "getcepfile.\n";
+myfile.close();
+}
   return file;
 }
 
@@ -553,6 +560,13 @@ static CephFileRef getCephFileRef(const char *path, XrdOucEnv *env, int flags,
                                   mode_t mode, unsigned long long offset) {
   CephFileRef fr;
   fillCephFile(path, env, fr);
+{
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "getcephfileref.\n";
+myfile.close();
+}
   fr.flags = flags;
   fr.mode = mode;
   fr.offset = 0;
