@@ -396,6 +396,18 @@ myfile << "set_default called.\n" << value << "\n";
 myfile.close();
 }
   if (value) {
+  {
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "\nvalue present\n";
+myfile.close();
+}
+    std::string s1 = value;
+    std::string toReplace("@");
+    size_t pos = s1.find(toReplace);
+    s1.replace(pos, toReplace.length(), "@dteam");
+    value = s1.c_str();
     CephFile newdefault;
     fillCephFileParams(value, NULL, newdefault);
     g_defaultParams = newdefault;
