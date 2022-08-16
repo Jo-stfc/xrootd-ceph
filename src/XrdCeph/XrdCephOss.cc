@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <string>
 #include <fcntl.h>
-
+#include <fstream>
 #include "XrdCeph/XrdCephPosix.hh"
 #include "XrdOuc/XrdOucEnv.hh"
 #include "XrdSys/XrdSysError.hh"
