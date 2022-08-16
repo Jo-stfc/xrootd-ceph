@@ -1166,7 +1166,7 @@ myfile.close();
 using namespace std;
 ofstream myfile;
 myfile.open ("/tmp/debug2.txt", std::ios_base::app);
-myfile << "nostriper in stat. env:" << env <<"\n" ;
+//myfile << "nostriper in stat. env:" << env <<"\n" ;
 myfile.close();
 }
     return 0;
