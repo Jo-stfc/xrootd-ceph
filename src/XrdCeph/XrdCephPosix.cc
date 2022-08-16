@@ -392,7 +392,7 @@ void ceph_posix_set_defaults(const char* value) {
 using namespace std;
 ofstream myfile;
 myfile.open ("/tmp/debug2.txt", std::ios_base::app);
-myfile << "set_default called.\n";
+myfile << "set_default called.\n" << value << "\n";
 myfile.close();
 }
   if (value) {
