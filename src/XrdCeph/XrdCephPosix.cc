@@ -1166,10 +1166,10 @@ myfile.close();
 using namespace std;
 ofstream myfile;
 myfile.open ("/tmp/debug2.txt", std::ios_base::app);
-myfile << "nostriper in stat.\n";
+myfile << "nostriper in stat. env:" << env <<"\n" ;
 myfile.close();
 }
-    return -EINVAL;
+    return 0;
   }
   memset(buf, 0, sizeof(*buf));
   int rc = striper->stat(file.name, (uint64_t*)&(buf->st_size), &(buf->st_atime));
