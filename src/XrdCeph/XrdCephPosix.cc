@@ -446,6 +446,13 @@ myfile.close();
 
     CephFile newdefault;
     fillCephFileParams(value, env, newdefault);
+ {
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "\nvfillcephfileparam 1 done:" << value;
+myfile.close();
+}
     g_defaultParams = newdefault;
  {
 using namespace std;
@@ -509,6 +516,13 @@ myfile << "spath list nocolon:"<< spath << "\n";
 myfile.close();
 }
     fillCephFileParams("", env, file);
+ {
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "\nfillcephfileparam 2 done\n";
+myfile.close();
+}
   } else {
     {
 using namespace std;
@@ -519,6 +533,13 @@ myfile.close();
 }
     file.name = spath.substr(colonPos+1);
     fillCephFileParams(spath.substr(0, colonPos), env, file);
+ {
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "\nfillcephfileparam 3 done\n";
+myfile.close();
+}
   }
 }
 
