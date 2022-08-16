@@ -378,10 +378,45 @@ static void fillCephObjectSize(const std::string &params, unsigned int offset, X
 void fillCephFileParams(const std::string &params, XrdOucEnv *env, CephFile &file) {
   // parse the params one by one
   unsigned int afterUser = fillCephUserId(params, env, file);
+{
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "afteruser:" << afterUser << "\n";
+myfile.close();
+}
   unsigned int afterPool = fillCephPool(params, afterUser, env, file);
-  unsigned int afterNbStripes = fillCephNbStripes(params, afterPool, env, file);
-  unsigned int afterStripeUnit = fillCephStripeUnit(params, afterNbStripes, env, file);
+{
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "afterpool:" << afterPool << "\n";
+myfile.close();
+} 
+ unsigned int afterNbStripes = fillCephNbStripes(params, afterPool, env, file);
+{
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "afternbstripes:" << afterNbStripes << "\n";
+myfile.close();
+} 
+ unsigned int afterStripeUnit = fillCephStripeUnit(params, afterNbStripes, env, file);
+{
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "afterstripeunit:" << afterStripeUnit << "\n";
+myfile.close();
+}
   fillCephObjectSize(params, afterStripeUnit, env, file);
+{
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "afteruser:" << afterUser << "\n";
+myfile.close();
+}
 }
 
 /// sets the default userId, pool and file layout
@@ -451,8 +486,22 @@ void fillCephFile(const char *path, XrdOucEnv *env, CephFile &file) {
   if (std::string::npos == colonPos) {
     // deal with name translation
     file.name = spath;
+    {
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "spath :"<< spath << "\n";
+myfile.close();
+}
     fillCephFileParams("", env, file);
   } else {
+    {
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "spath :"<< spath.substr(colonPos+1) << "\n";
+myfile.close();
+}
     file.name = spath.substr(colonPos+1);
     fillCephFileParams(spath.substr(0, colonPos), env, file);
   }
