@@ -56,6 +56,13 @@ myfile.close();
       ceph_posix_set_defaults(parms, NULL);
     } catch (std::exception &e) {
       XrdCephXattrEroute.Say("CephXattr loading failed with exception. Check the syntax of parameters : ", parms);
+{
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "xattr fail.\n";
+myfile.close();
+}
       return 0;
     }
     return new XrdCephXAttr();

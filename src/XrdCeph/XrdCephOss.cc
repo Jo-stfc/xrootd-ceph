@@ -80,6 +80,13 @@ extern "C"
       ceph_posix_set_defaults(parms, &myEnv);
     } catch (std::exception &e) {
       XrdCephEroute.Say("CephOss loading failed with exception. Check the syntax of parameters : ", parms);
+      {
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "oss error.\n";
+myfile.close();
+}
       return 0;
     }
     // deal with logging
