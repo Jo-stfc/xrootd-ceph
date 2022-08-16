@@ -27,6 +27,8 @@
 #include "XrdSys/XrdSysError.hh"
 #include "XrdOuc/XrdOucTrace.hh"
 #include "XrdCeph/XrdCephXAttr.hh"
+#include <iostream>
+#include <fstream>
 
 XrdSysError XrdCephXattrEroute(0);
 XrdOucTrace XrdCephXattrTrace(&XrdCephXattrEroute);
@@ -44,7 +46,14 @@ extern "C"
     XrdCephXattrEroute.Say("++++++ CERN/IT-DSS XrdCephXattr");
     // set parameters
     try {
-      ceph_posix_set_defaults(parms);
+{
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "xattr default.\n";
+myfile.close();
+}
+      ceph_posix_set_defaults(parms, NULL);
     } catch (std::exception &e) {
       XrdCephXattrEroute.Say("CephXattr loading failed with exception. Check the syntax of parameters : ", parms);
       return 0;
