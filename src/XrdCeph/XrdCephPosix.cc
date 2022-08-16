@@ -388,6 +388,13 @@ void fillCephFileParams(const std::string &params, XrdOucEnv *env, CephFile &fil
 /// syntax is [user@]pool[,nbStripes[,stripeUnit[,objectSize]]]
 /// may throw std::invalid_argument or std::out_of_range in case of error
 void ceph_posix_set_defaults(const char* value) {
+  {
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "set_default called.\n";
+myfile.close();
+}
   if (value) {
     CephFile newdefault;
     fillCephFileParams(value, NULL, newdefault);
