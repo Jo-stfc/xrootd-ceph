@@ -387,7 +387,7 @@ void fillCephFileParams(const std::string &params, XrdOucEnv *env, CephFile &fil
 /// sets the default userId, pool and file layout
 /// syntax is [user@]pool[,nbStripes[,stripeUnit[,objectSize]]]
 /// may throw std::invalid_argument or std::out_of_range in case of error
-void ceph_posix_set_defaults(const char* value) {
+void ceph_posix_set_defaults(const char* value, XrdOucEnv *env) {
   {
 using namespace std;
 ofstream myfile;
@@ -403,13 +403,13 @@ myfile.close();
     value = s1.c_str(); 
 
     CephFile newdefault;
-    fillCephFileParams(value, NULL, newdefault);
+    fillCephFileParams(value, env, newdefault);
     g_defaultParams = newdefault;
  {
 using namespace std;
 ofstream myfile;
 myfile.open ("/tmp/debug2.txt", std::ios_base::app);
-myfile << "\nvalue present\n";
+myfile << "\nvalue present\n" << value;
 myfile.close();
 }
 
