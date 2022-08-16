@@ -1153,8 +1153,22 @@ int ceph_posix_stat(XrdOucEnv* env, const char *pathname, struct stat *buf) {
   // atime, mtime and ctime are set all to the same value
   // mode is set arbitrarily to 0666 | S_IFREG
   CephFile file = getCephFile(pathname, env);
+{
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "posix_stat."<< pathname <<"\n";
+myfile.close();
+}
   libradosstriper::RadosStriper *striper = getRadosStriper(file);
   if (0 == striper) {
+ {
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "nostriper in stat.\n";
+myfile.close();
+}
     return -EINVAL;
   }
   memset(buf, 0, sizeof(*buf));
@@ -1162,6 +1176,13 @@ int ceph_posix_stat(XrdOucEnv* env, const char *pathname, struct stat *buf) {
   if (rc != 0) {
     // for non existing file. Check that we did not open it for write recently
     // in that case, we return 0 size and current time
+    {
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "stat op failed.\n";
+myfile.close();
+}
     if (-ENOENT == rc && isOpenForWrite(file.name)) {
       buf->st_size = 0;
       buf->st_atime = time(NULL);
