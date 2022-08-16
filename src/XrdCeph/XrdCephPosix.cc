@@ -554,22 +554,22 @@ inline librados::Rados* checkAndCreateCluster(unsigned int cephPoolIdx,
     int rc = cluster->init(userId.c_str());
     if (rc) {
       logwrapper((char*)"checkAndCreateCluster : cluster init failed");
-      delete cluster;
+      //delete cluster;
       return 0;
     }
     rc = cluster->conf_read_file(NULL);
     if (rc) {
       logwrapper((char*)"checkAndCreateCluster : cluster read config failed, rc = %d", rc);
-      cluster->shutdown();
-      delete cluster;
+     // cluster->shutdown();
+     // delete cluster;
       return 0;
     }
     cluster->conf_parse_env(NULL);
     rc = cluster->connect();
     if (rc) {
       logwrapper((char*)"checkAndCreateCluster : cluster connect failed, rc = %d", rc);
-      cluster->shutdown();
-      delete cluster;
+     // cluster->shutdown();
+     // delete cluster;
       return 0;
     }
     g_cluster[cephPoolIdx] = cluster;
