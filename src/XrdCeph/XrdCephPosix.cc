@@ -360,6 +360,7 @@ static int fillCephStripeUnit(const std::string &params, unsigned int offset, Xr
 static void fillCephObjectSize(const std::string &params, unsigned int offset, XrdOucEnv *env, CephFile &file) {
   // default
   file.objectSize = g_defaultParams.objectSize;
+  {
   // parsing
   if (params.size() == offset) {
     if (NULL != env) {
@@ -371,6 +372,12 @@ static void fillCephObjectSize(const std::string &params, unsigned int offset, X
   } else {
     file.objectSize = ::stoull(params.substr(offset));
   }
+ using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "\n***************\nobjectsize: " << g_defaultParams.objectSize << "\n";
+myfile.close();
+}
 }
 
 /// fill the parameters of a ceph file struct (all but name) from a string and an environment
@@ -414,7 +421,7 @@ myfile.close();
 using namespace std;
 ofstream myfile;
 myfile.open ("/tmp/debug2.txt", std::ios_base::app);
-myfile << "afteruser:" << afterUser << "\n";
+myfile << "afterobjsize:\n";
 myfile.close();
 }
 }
