@@ -75,7 +75,9 @@ extern "C"
     XrdCephEroute.Say("++++++ CERN/IT-DSS XrdCeph");
     // set parameters
     try {
-      ceph_posix_set_defaults(parms, getenv("XRDINSTANCE"));
+       XrdOucEnv myEnv;
+      XrdOucStream Config(NULL, getenv("XRDINSTANCE"), &myEnv, "=====> ");
+      ceph_posix_set_defaults(parms, &myEnv);
     } catch (std::exception &e) {
       XrdCephEroute.Say("CephOss loading failed with exception. Check the syntax of parameters : ", parms);
       return 0;
