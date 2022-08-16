@@ -487,7 +487,15 @@ void fillCephFile(const char *path, XrdOucEnv *env, CephFile &file) {
   // applied. These defaults are initially set to 'admin', 'default', 1, 4MB and 4MB
   // but can be changed via a call to ceph_posix_set_defaults
   std::string spath {path};
-  // If namelib is specified, apply translation to the whole path (which might include pool, etc)
+    {
+using namespace std;
+ofstream myfile;
+myfile.open ("/tmp/debug2.txt", std::ios_base::app);
+myfile << "spath-pre :"<< spath << "\n";
+myfile.close();
+}  
+
+// If namelib is specified, apply translation to the whole path (which might include pool, etc)
   translateFileName(spath,path);
   size_t colonPos = spath.find(':');
   if (std::string::npos == colonPos) {
@@ -497,7 +505,7 @@ void fillCephFile(const char *path, XrdOucEnv *env, CephFile &file) {
 using namespace std;
 ofstream myfile;
 myfile.open ("/tmp/debug2.txt", std::ios_base::app);
-myfile << "spath :"<< spath << "\n";
+myfile << "spath list nocolon:"<< spath << "\n";
 myfile.close();
 }
     fillCephFileParams("", env, file);
@@ -506,7 +514,7 @@ myfile.close();
 using namespace std;
 ofstream myfile;
 myfile.open ("/tmp/debug2.txt", std::ios_base::app);
-myfile << "spath :"<< spath.substr(colonPos+1) << "\n";
+myfile << "spath list withcolon:"<< spath.substr(colonPos+1) << "\n";
 myfile.close();
 }
     file.name = spath.substr(colonPos+1);
